@@ -8,15 +8,23 @@ class Tag extends Model { }
 Tag.init(
   {
     // define columns
-    tag_id: {
+    id: {
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true,
       autoIncrement: true,
     },
-    tag_name: {
-      type: DataTypes.STRING,
+    // tag_name: {
+    //   type: DataTypes.STRING,
+    //   allowNull: false,
+    // },
+    product_tag: {
+      type: DataTypes.INTEGER,
       allowNull: false,
+      references: {
+        model: ProductTag,
+        Key: 'id'
+      },
     },
   },
   {
@@ -27,14 +35,5 @@ Tag.init(
     modelName: 'tag',
   }
 );
-
-Tag.belongsToMany(Product, {
-  through: {
-    model: ProductTag,
-    unique: false,
-  },
-  foreignKey: 'tag_id',
-  as: 'product_tag',
-});
 
 module.exports = Tag;

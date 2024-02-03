@@ -38,19 +38,19 @@ Product.init(
     category_id: {
       type: DataTypes.INTEGER,
       allowNull: true,
-      // references: {
-      //   model: Category,
-      //   key: 'category_id'
-      // },
+      references: {
+        model: Category,
+        key: 'category_id'
+      },
     },
-    // tag_id: {
-    //   type: DataTypes.INTEGER,
-    //   allowNull: true,
-    //   // references: {
-    //   //   model: Product,
-    //   //   key: 'id'
-    //   // }
-    // }
+    tag_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: ProductTag,
+        key: 'product_id'
+      }
+    }
   },
   {
     sequelize,
@@ -60,15 +60,6 @@ Product.init(
     modelName: 'product',
   }
 );
-
-// Add the belongsToMany association
-Product.belongsTo(Category, { foreignKey: 'category_id' });
-
-Product.belongsToMany(Tag, {
-  through: 'product_tag',
-  foreignKey: 'product_id',
-  as: 'product_tag'
-});
 
 
 module.exports = Product;
