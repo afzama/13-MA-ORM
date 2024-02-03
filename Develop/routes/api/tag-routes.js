@@ -28,6 +28,7 @@ router.get('/:id', async (req, res) => {
 
     res.status(200).json(tagData);
   } catch (err) {
+    console.error(err);
     res.status(500).json(err);
   }
 });

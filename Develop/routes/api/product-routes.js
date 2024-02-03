@@ -2,7 +2,6 @@ const router = require('express').Router();
 const { Product, Category, Tag, ProductTag } = require('../../models');
 
 // The `/api/products` endpoint
-
 // get all products
 // find all products
 // be sure to include its associated Category and Tag data
@@ -38,35 +37,29 @@ router.get('/:id', async (req, res) => {
 // create new product
 router.post('/', async (req, res) => {
   try {
-    const productData = await Product.create(req.body);
-    // if there's product tags, we need to create pairings to bulk create in the ProductTag model
-    if (req.body.tag_id.length) {
-      const productTagIdArr = req.body.tag_id.map((tag_id) => {
-        return {
-          product_id: productData.id,
-          tag_id: [8,3,1]
-        };
-      });
+    // Create a new product
+    const newProduct = await Product.create(req.body);
+    const tagIds = req.body.tagIds || [1, 2, 3, 4, 5, 6];
 
-      await ProductTag.bulkCreate(productTagIdArr);
-    }
-    // if no product tags, just respond
-    res.status(200).json(productData);
+    // Create associations in ProductTag model
+    const productTagAssociations = tagIds.map(tagId => {
+      return ProductTag.create({
+        product_id: newProduct.id,
+        tag_id: tagId,
+      });
+    });
+
+    // Wait for all associations to be created
+    await Promise.all(productTagAssociations);
+
+    // Now, you have a new product associated with the specified tags
+
+    res.status(200).json(newProduct);
   } catch (err) {
-    console.log(err);
-    res.status(400).json(err);
+    console.error(err);
+    res.status(500).json(err);
   }
 });
-
-
-/* req.body should look like this...
-  {
-    product_name: "Basketball",
-    price: 200.00,
-    stock: 3,
-    tagIds: [1, 2, 3, 4]
-  }
-*/
 
 // update product
 router.put('/:id', (req, res) => {

@@ -4,6 +4,8 @@ const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../config/connection');
 const Category = require('./Category');
 const Tag = require('./Tag');
+const ProductTag = require('./ProductTag');
+
 
 // Initialize Product model (table) by extending off Sequelize's Model class
 class Product extends Model { }
@@ -41,14 +43,14 @@ Product.init(
       //   key: 'category_id'
       // },
     },
-    tag_id: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-      // references: {
-      //   model: Product,
-      //   key: 'id'
-      // }
-    }
+    // tag_id: {
+    //   type: DataTypes.INTEGER,
+    //   allowNull: true,
+    //   // references: {
+    //   //   model: Product,
+    //   //   key: 'id'
+    //   // }
+    // }
   },
   {
     sequelize,
@@ -60,9 +62,12 @@ Product.init(
 );
 
 // Add the belongsToMany association
+Product.belongsTo(Category, { foreignKey: 'category_id' });
+
 Product.belongsToMany(Tag, {
   through: 'product_tag',
   foreignKey: 'product_id',
+  as: 'product_tag'
 });
 
 
